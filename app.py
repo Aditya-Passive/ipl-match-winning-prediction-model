@@ -92,7 +92,7 @@ TEAM_METADATA = {
         'text_color': '#FFFFFF',
         'logo': 'rcb.svg',
         'stadium': 'M. Chinnaswamy Stadium',
-        'titles': 0
+        'titles': 2
     },
     'Delhi Capitals': {
         'code': 'DC',
