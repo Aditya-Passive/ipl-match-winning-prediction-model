@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <linearGradient id="lsgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00B4D8"/>
+      <stop offset="100%" stop-color="#0077B6"/>
+    </linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="56" fill="url(#lsgGrad)" stroke="#F77F00" stroke-width="4"/>
+  <path d="M34 50 Q60 30 86 50 Q60 42 34 50 Z" fill="#FFF"/>
+  <circle cx="60" cy="42" r="6" fill="#F77F00" stroke="#FFF" stroke-width="1.5"/>
+  <polygon points="60,48 52,68 68,68" fill="#F77F00"/>
+  <text x="60" y="96" font-family="'Segoe UI', Roboto, sans-serif" font-size="19" font-weight="900" fill="#FFF" text-anchor="middle" letter-spacing="1.5">LSG</text>
+  <text x="60" y="108" font-family="'Segoe UI', Roboto, sans-serif" font-size="7.5" font-weight="700" fill="#F77F00" text-anchor="middle">SUPER GIANTS</text>
+</svg>

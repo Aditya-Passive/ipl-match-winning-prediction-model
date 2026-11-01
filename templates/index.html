@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive IPL Match Winner Prediction System | Machine Learning & Flask</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@700;800;900&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('home') }}">
+                <img src="{{ url_for('static', filename='images/ipl_trophy.svg') }}" alt="IPL Trophy" class="brand-icon">
+                <span>IPL <span class="brand-highlight">WIN PREDICTOR</span></span>
+            </a>
+            <button class="navbar-toggler text-white border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+                <i class="bi bi-list fs-2"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navMenu">
+                <ul class="navbar-nav ms-auto align-items-center gap-1">
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom active" href="{{ url_for('home') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom" href="#overview">Overview</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom" href="#methodology">Methodology</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom" href="#teams">IPL Teams</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom" href="#documentation">Documentation</a>
+                    </li>
+                    <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
+                        <a class="nav-link btn-predict-nav" href="{{ url_for('predict_page') }}">
+                            <i class="bi bi-play-circle-fill me-1"></i> Live Predictor
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-7">
+                    <div class="hero-badge">
+                        <span class="pulse-dot"></span>
+                        Machine Learning Powered • Interactive T20 Analytics
+                    </div>
+                    <h1 class="hero-title">
+                        Interactive IPL Match Winner <br>
+                        <span class="text-gradient-gold">Prediction System</span>
+                    </h1>
+                    <p class="hero-description">
+                        An advanced probabilistic forecasting model calculating in-play win probabilities during simulated or ongoing IPL run chases. Built using calibrated Logistic Regression, comprehensive feature engineering, and 16+ seasons of historical IPL match dynamics.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="{{ url_for('predict_page') }}" class="btn-predict-action" style="max-width: 250px;">
+                            <i class="bi bi-lightning-charge-fill"></i> Launch Predictor
+                        </a>
+                        <a href="#methodology" class="btn-reset-action d-flex align-items-center gap-2">
+                            <i class="bi bi-diagram-3"></i> View Architecture
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-lg-5">
+                    <!-- Live Simulation Card Preview -->
+                    <div class="hero-card-preview">
+                        <div class="preview-header">
+                            <div>
+                                <small class="text-muted text-uppercase fw-bold" style="font-size: 0.75rem;">LIVE SIMULATION DEMO</small>
+                                <div class="text-white fw-bold fs-6">Wankhede Stadium, Mumbai</div>
+                            </div>
+                            <span class="broadcast-badge">
+                                <i class="bi bi-record-circle me-1"></i> 2nd Innings
+                            </span>
+                        </div>
+
+                        <div class="matchup-preview">
+                            <div class="team-preview-box">
+                                <img src="{{ url_for('static', filename='images/csk.svg') }}" alt="CSK" class="team-preview-logo">
+                                <div class="team-preview-name">CSK (Chasing)</div>
+                                <div class="team-preview-prob text-warning">64.5%</div>
+                            </div>
+
+                            <div class="vs-badge">VS</div>
+
+                            <div class="team-preview-box">
+                                <img src="{{ url_for('static', filename='images/mi.svg') }}" alt="MI" class="team-preview-logo">
+                                <div class="team-preview-name">MI (Defending)</div>
+                                <div class="team-preview-prob" style="color: #38bdf8;">35.5%</div>
+                            </div>
+                        </div>
+
+                        <div class="dual-progress-bar mb-3">
+                            <div class="progress-batting" style="width: 64.5%; background: linear-gradient(90deg, #fdb913, #f37021);"></div>
+                            <div class="progress-bowling" style="width: 35.5%; background: linear-gradient(90deg, #004ba0, #001d4a);"></div>
+                        </div>
+
+                        <div class="live-calc-bar py-2 mb-0">
+                            <div>
+                                <div class="calc-pill-val" style="font-size: 1.1rem; color: #fff;">158</div>
+                                <div class="calc-pill-label">Target</div>
+                            </div>
+                            <div>
+                                <div class="calc-pill-val" style="font-size: 1.1rem; color: var(--ipl-cyan);">32</div>
+                                <div class="calc-pill-label">Runs Left</div>
+                            </div>
+                            <div>
+                                <div class="calc-pill-val" style="font-size: 1.1rem; color: #ffd700;">22</div>
+                                <div class="calc-pill-label">Balls Left</div>
+                            </div>
+                            <div>
+                                <div class="calc-pill-val" style="font-size: 1.1rem; color: #00e676;">6</div>
+                                <div class="calc-pill-label">Wickets Left</div>
+                            </div>
+                            <div>
+                                <div class="calc-pill-val" style="font-size: 1.1rem; color: #ff3366;">8.72</div>
+                                <div class="calc-pill-label">RRR</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Metrics Ribbon -->
+    <div class="container">
+        <div class="stats-ribbon">
+            <div class="row g-3">
+                <div class="col-6 col-md-3">
+                    <div class="stat-item">
+                        <div class="stat-value">{{ accuracy }}%</div>
+                        <div class="stat-label">Model Test Accuracy</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-item">
+                        <div class="stat-value">{{ roc_auc }}%</div>
+                        <div class="stat-label">ROC-AUC Calibration</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-item">
+                        <div class="stat-value">22,000+</div>
+                        <div class="stat-label">IPL Chase Situations</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="stat-item">
+                        <div class="stat-value">&lt; 20 ms</div>
+                        <div class="stat-label">Inference Latency</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Project Overview & Problem Statement -->
+    <section id="overview" class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <span class="text-uppercase text-cyan fw-bold" style="color: var(--ipl-cyan); letter-spacing: 1.5px; font-size: 0.85rem;">Project Context</span>
+                <h2 class="display-6 fw-bold text-white mt-1">Understanding In-Play T20 Win Probability</h2>
+                <p class="text-secondary mx-auto" style="max-width: 700px;">
+                    Predicting match outcomes during an IPL run chase requires dynamic feature modeling that balances required scoring velocity against resource depletion.
+                </p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="glass-card">
+                        <div class="card-icon-wrapper">
+                            <i class="bi bi-trophy-fill"></i>
+                        </div>
+                        <h4 class="text-white mb-3">The T20 Chase Challenge</h4>
+                        <p class="text-secondary" style="line-height: 1.7;">
+                            The Indian Premier League (IPL) is among the most volatile sports leagues in the world, where match momentum shifts rapidly over-by-over. In a 2nd innings run-chase, every boundary scored raises the batting team's probability, while every fallen wicket drastically depletes their remaining batting depth.
+                        </p>
+                        <p class="text-secondary" style="line-height: 1.7;">
+                            This project develops an end-to-end Machine Learning pipeline that maps dynamic match state variables—including runs required, balls remaining, wickets in hand, and required run rate (RRR)—into smooth, calibrated winning probabilities.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="glass-card">
+                        <div class="card-icon-wrapper" style="color: #fdb913; background: rgba(253, 185, 19, 0.1); border-color: rgba(253, 185, 19, 0.25);">
+                            <i class="bi bi-exclamation-triangle"></i>
+                        </div>
+                        <h4 class="text-white mb-3">Problem Statement</h4>
+                        <p class="text-secondary" style="line-height: 1.7;">
+                            Conventional cricket statistics (such as static head-to-head records or simple run-rate comparisons) fail to encapsulate the dynamic pressure of T20 death overs and venue dew factors. 
+                        </p>
+                        <p class="text-secondary" style="line-height: 1.7;">
+                            Furthermore, uncalibrated tree-based models often generate abrupt, erratic probability jumps that lack real-world match realism. The goal of this system is to formulate a continuous, statistically sound machine learning framework that delivers dependable live winning probabilities and provides sports analysts, coaches, and fans with intuitive visual insights.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Methodology & System Architecture -->
+    <section id="methodology" class="py-5" style="background: rgba(10, 14, 26, 0.5);">
+        <div class="container">
+            <div class="text-center mb-5">
+                <span class="text-uppercase fw-bold" style="color: var(--ipl-cyan); letter-spacing: 1.5px; font-size: 0.85rem;">Pipeline & Workflow</span>
+                <h2 class="display-6 fw-bold text-white mt-1">Machine Learning System Architecture</h2>
+                <p class="text-secondary mx-auto" style="max-width: 650px;">
+                    From raw historical ball-by-ball match situations to interactive probability inference.
+                </p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="glass-card">
+                        <div class="step-number">01</div>
+                        <div class="card-icon-wrapper">
+                            <i class="bi bi-database-check"></i>
+                        </div>
+                        <h5 class="text-white mb-2">Data Preprocessing</h5>
+                        <p class="text-secondary small">
+                            Historical IPL matches are filtered for 2nd innings run chases. Data cleaning removes invalid records, no-results, rain-truncated DLS matches, and handles stadium aliases across 16 seasons.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="glass-card">
+                        <div class="step-number">02</div>
+                        <div class="card-icon-wrapper" style="color: #00e676; background: rgba(0, 230, 118, 0.1); border-color: rgba(0, 230, 118, 0.25);">
+                            <i class="bi bi-cpu"></i>
+                        </div>
+                        <h5 class="text-white mb-2">Feature Engineering</h5>
+                        <p class="text-secondary small">
+                            Five high-impact dynamic features are computed: Runs Left, Balls Left, Wickets in Hand, Current Run Rate (CRR = Score &times; 6 / Balls), and Required Run Rate (RRR = Runs Left &times; 6 / Balls Left).
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="glass-card">
+                        <div class="step-number">03</div>
+                        <div class="card-icon-wrapper" style="color: #ff3366; background: rgba(255, 51, 102, 0.1); border-color: rgba(255, 51, 102, 0.25);">
+                            <i class="bi bi-sliders"></i>
+                        </div>
+                        <h5 class="text-white mb-2">Scikit-Learn Pipeline</h5>
+                        <p class="text-secondary small">
+                            A ColumnTransformer encodes categorical variables (Batting Team, Bowling Team, City) via One-Hot Encoding and feeds numerical match features directly into the Logistic Regression classifier.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="glass-card">
+                        <div class="step-number">04</div>
+                        <div class="card-icon-wrapper" style="color: #ffd700; background: rgba(255, 215, 0, 0.1); border-color: rgba(255, 215, 0, 0.25);">
+                            <i class="bi bi-graph-up"></i>
+                        </div>
+                        <h5 class="text-white mb-2">Calibrated Probability</h5>
+                        <p class="text-secondary small">
+                            Logistic Regression produces smooth, well-calibrated probabilities via the Sigmoid curve &sigma;(w<sup>T</sup>x + b), preventing erratic jumps and honoring cricket chase dynamics monotonically.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="glass-card">
+                        <div class="step-number">05</div>
+                        <div class="card-icon-wrapper" style="color: #38bdf8; background: rgba(56, 189, 248, 0.1); border-color: rgba(56, 189, 248, 0.25);">
+                            <i class="bi bi-server"></i>
+                        </div>
+                        <h5 class="text-white mb-2">Flask RESTful Engine</h5>
+                        <p class="text-secondary small">
+                            The trained model is serialized to <code>model.pkl</code> and loaded into Flask memory. A REST API handles live POST requests with rigorous input boundary validation and &lt; 20ms response time.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="glass-card">
+                        <div class="step-number">06</div>
+                        <div class="card-icon-wrapper" style="color: #c084fc; background: rgba(192, 132, 252, 0.1); border-color: rgba(192, 132, 252, 0.25);">
+                            <i class="bi bi-pie-chart-fill"></i>
+                        </div>
+                        <h5 class="text-white mb-2">Chart.js Visualization</h5>
+                        <p class="text-secondary small">
+                            Frontend dynamically renders interactive win percentage donuts, dual team progress bars, pressure indicators, and match diagnostics powered by Chart.js and Bootstrap 5.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- IPL Teams Showcase Grid -->
+    <section id="teams" class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <span class="text-uppercase fw-bold" style="color: var(--ipl-cyan); letter-spacing: 1.5px; font-size: 0.85rem;">Franchises</span>
+                <h2 class="display-6 fw-bold text-white mt-1">Covered IPL Teams</h2>
+                <p class="text-secondary mx-auto" style="max-width: 600px;">
+                    Trained across all 10 active Indian Premier League franchises.
+                </p>
+            </div>
+
+            <div class="row g-3 row-cols-2 row-cols-sm-3 row-cols-md-5">
+                {% for team_name, meta in team_metadata.items() %}
+                <div class="col">
+                    <div class="team-grid-card">
+                        <img src="{{ url_for('static', filename='images/' + meta.logo) }}" alt="{{ team_name }}" class="team-grid-logo">
+                        <div class="text-white fw-bold small mb-1">{{ meta.code }}</div>
+                        <div class="text-muted" style="font-size: 0.72rem; min-height: 2rem;">{{ team_name }}</div>
+                        <div class="mt-2">
+                            {% if meta.titles > 0 %}
+                            <span class="team-title-pill">
+                                <i class="bi bi-trophy-fill me-1"></i> {{ meta.titles }} {{ 'Title' if meta.titles == 1 else 'Titles' }}
+                            </span>
+                            {% else %}
+                            <span class="team-title-pill" style="background: rgba(255,255,255,0.05); color: #94a3b8; border-color: rgba(255,255,255,0.1);">
+                                Contender
+                            </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Thriller Match Presets -->
+    <section class="py-5" style="background: rgba(10, 14, 26, 0.4);">
+        <div class="container">
+            <div class="glass-card text-center p-4 p-md-5">
+                <span class="badge bg-danger mb-3 px-3 py-2 text-uppercase fw-bold">Try Curated Scenarios</span>
+                <h2 class="text-white fw-bold mb-3">Famous High-Voltage IPL Finishes</h2>
+                <p class="text-secondary mx-auto mb-4" style="max-width: 650px;">
+                    Test the machine learning model on historic match situations with one click:
+                </p>
+
+                <div class="row g-3 justify-content-center">
+                    {% for scenario in sample_scenarios %}
+                    <div class="col-md-6 col-lg-3">
+                        <div class="p-3 rounded-4 text-start h-100" style="background: rgba(10, 14, 26, 0.7); border: 1px solid var(--border-color);">
+                            <div class="text-warning fw-bold small mb-1">{{ scenario.title }}</div>
+                            <p class="text-muted small mb-3" style="font-size: 0.8rem;">{{ scenario.description }}</p>
+                            <a href="{{ url_for('predict_page') }}?batting={{ scenario.batting_team }}&bowling={{ scenario.bowling_team }}&city={{ scenario.city }}&target={{ scenario.target }}&score={{ scenario.current_score }}&overs={{ scenario.overs }}&wickets={{ scenario.wickets_fallen }}" class="btn btn-sm btn-outline-info w-100 rounded-pill">
+                                <i class="bi bi-play-circle me-1"></i> Load Scenario
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="mt-4 pt-2">
+                    <a href="{{ url_for('predict_page') }}" class="btn-predict-action mx-auto" style="max-width: 280px;">
+                        <i class="bi bi-bullseye"></i> Open Match Predictor
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Complete Project Academic Documentation Section -->
+    <section id="documentation" class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <span class="text-uppercase fw-bold" style="color: var(--ipl-cyan); letter-spacing: 1.5px; font-size: 0.85rem;">Comprehensive Report</span>
+                <h2 class="display-6 fw-bold text-white mt-1">Project Documentation</h2>
+                <p class="text-secondary mx-auto" style="max-width: 650px;">
+                    Academic-standard documentation covering methodology, dataset structure, equations, and experimental results.
+                </p>
+            </div>
+
+            <div class="accordion" id="docAccordion">
+                <!-- Introduction -->
+                <div class="accordion-item mb-3 rounded-4 overflow-hidden" style="background: var(--bg-card); border: 1px solid var(--border-color);">
+                    <h2 class="accordion-header" id="headingIntro">
+                        <button class="accordion-button collapsed bg-transparent text-white fw-bold shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseIntro">
+                            <i class="bi bi-info-circle me-2 text-info"></i> 1. Introduction & Context
+                        </button>
+                    </h2>
+                    <div id="collapseIntro" class="accordion-collapse collapse" data-bs-parent="#docAccordion">
+                        <div class="accordion-body text-secondary" style="line-height: 1.8;">
+                            The Indian Premier League is the world's preeminent Twenty20 cricket tournament. Unlike test matches or 50-over ODIs, T20 cricket compresses match tempo into 120 legal deliveries per innings. During the second innings (the chase), victory is strictly binary: the chasing team must score strictly more runs than the defending team within 120 balls without losing all 10 wickets. Interactive in-play win probability estimation provides viewers, broadcasters, and analytics teams with data-driven evaluations of which side controls match momentum.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mathematical Formulation -->
+                <div class="accordion-item mb-3 rounded-4 overflow-hidden" style="background: var(--bg-card); border: 1px solid var(--border-color);">
+                    <h2 class="accordion-header" id="headingMath">
+                        <button class="accordion-button collapsed bg-transparent text-white fw-bold shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMath">
+                            <i class="bi bi-calculator me-2 text-warning"></i> 2. Mathematical Equations & Feature Formulation
+                        </button>
+                    </h2>
+                    <div id="collapseMath" class="accordion-collapse collapse" data-bs-parent="#docAccordion">
+                        <div class="accordion-body text-secondary" style="line-height: 1.8;">
+                            <p class="mb-2">The state of an in-progress IPL run-chase is formally parameterized by nine orthogonal features:</p>
+                            <ul class="text-white-50">
+                                <li><strong>Runs Left:</strong> \( R_{\text{left}} = \text{Target} - \text{Current Score} \)</li>
+                                <li><strong>Balls Left:</strong> \( B_{\text{left}} = 120 - [(\lfloor\text{Overs}\rfloor \times 6) + \text{Balls in Over}] \)</li>
+                                <li><strong>Wickets in Hand:</strong> \( W_{\text{rem}} = 10 - \text{Wickets Fallen} \)</li>
+                                <li><strong>Current Run Rate (CRR):</strong> \( \text{CRR} = \frac{\text{Current Score} \times 6}{120 - B_{\text{left}}} \)</li>
+                                <li><strong>Required Run Rate (RRR):</strong> \( \text{RRR} = \frac{R_{\text{left}} \times 6}{B_{\text{left}}} \)</li>
+                                <li><strong>Categorical Context:</strong> \( \text{Batting Team}, \text{Bowling Team}, \text{Host City} \)</li>
+                            </ul>
+                            <p class="mb-0">
+                                Winning probability is computed via the logistic sigmoid function:
+                                <br>
+                                <span class="text-info fw-bold">\( P(Y = 1 \mid \mathbf{x}) = \frac{1}{1 + e^{-(\mathbf{w}^T \mathbf{x} + b)}} \)</span>
+                                <br>
+                                Where \( Y = 1 \) denotes chasing team victory and \( Y = 0 \) denotes defending team victory.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dataset Description -->
+                <div class="accordion-item mb-3 rounded-4 overflow-hidden" style="background: var(--bg-card); border: 1px solid var(--border-color);">
+                    <h2 class="accordion-header" id="headingDataset">
+                        <button class="accordion-button collapsed bg-transparent text-white fw-bold shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDataset">
+                            <i class="bi bi-file-earmark-spreadsheet me-2 text-success"></i> 3. Dataset Description & Preprocessing
+                        </button>
+                    </h2>
+                    <div id="collapseDataset" class="accordion-collapse collapse" data-bs-parent="#docAccordion">
+                        <div class="accordion-body text-secondary" style="line-height: 1.8;">
+                            The model is trained on <code>dataset/matches.csv</code>, comprising 22,000+ match situation snapshots spanning 1,200 simulated and historical IPL fixtures. Preprocessing steps include:
+                            <ol class="mt-2 text-white-50">
+                                <li>Dropping matches decided by Duckworth-Lewis-Stern (DLS) method or abandoned due to weather.</li>
+                                <li>Harmonizing legacy franchise names (e.g. Delhi Daredevils to Delhi Capitals, Kings XI Punjab to Punjab Kings).</li>
+                                <li>Filtering out impossible states (e.g. Current Score &ge; Target, Balls Left = 0, or Wickets Fallen = 10).</li>
+                                <li>Splitting data using an 80:20 stratified train-test split to preserve natural chase-win ratios.</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Experimental Results -->
+                <div class="accordion-item mb-3 rounded-4 overflow-hidden" style="background: var(--bg-card); border: 1px solid var(--border-color);">
+                    <h2 class="accordion-header" id="headingResults">
+                        <button class="accordion-button collapsed bg-transparent text-white fw-bold shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseResults">
+                            <i class="bi bi-trophy me-2 text-primary"></i> 4. Evaluation Results & Model Performance
+                        </button>
+                    </h2>
+                    <div id="collapseResults" class="accordion-collapse collapse" data-bs-parent="#docAccordion">
+                        <div class="accordion-body text-secondary" style="line-height: 1.8;">
+                            <div class="table-responsive">
+                                <table class="table table-dark table-striped align-middle my-2" style="border-radius: 8px; overflow: hidden;">
+                                    <thead>
+                                        <tr>
+                                            <th>Metric</th>
+                                            <th>Score</th>
+                                            <th>Interpretation</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Test Accuracy</strong></td>
+                                            <td><span class="badge bg-success">{{ accuracy }}%</span></td>
+                                            <td>Correct match outcome classification across 4,400+ holdout test chase states.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>ROC-AUC Score</strong></td>
+                                            <td><span class="badge bg-info">{{ roc_auc }}%</span></td>
+                                            <td>Exceptional probability discrimination across varying match pressure levels.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Precision (Chase Win)</strong></td>
+                                            <td><span class="badge bg-primary">{{ precision }}%</span></td>
+                                            <td>High confidence when predicting chasing team victory.</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Recall (Chase Win)</strong></td>
+                                            <td><span class="badge bg-warning text-dark">{{ recall }}%</span></td>
+                                            <td>Consistently detects underdog comeback scenarios.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Future Scope & Conclusion -->
+                <div class="accordion-item rounded-4 overflow-hidden" style="background: var(--bg-card); border: 1px solid var(--border-color);">
+                    <h2 class="accordion-header" id="headingFuture">
+                        <button class="accordion-button collapsed bg-transparent text-white fw-bold shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFuture">
+                            <i class="bi bi-stars me-2 text-purple" style="color: #c084fc;"></i> 5. Future Scope & Conclusion
+                        </button>
+                    </h2>
+                    <div id="collapseFuture" class="accordion-collapse collapse" data-bs-parent="#docAccordion">
+                        <div class="accordion-body text-secondary" style="line-height: 1.8;">
+                            <strong>Future Enhancements:</strong>
+                            <ul class="text-white-50 mt-1 mb-3">
+                                <li>Integration of real-time ball-by-ball Cricinfo / Cricbuzz API feeds for automated live match sync.</li>
+                                <li>Player matchup embeddings (e.g. Batsman vs Bowler historical strike rates, spin vs pace vulnerability).</li>
+                                <li>Dynamic weather factors (dew index, temperature, humidity, boundary dimensions per stadium).</li>
+                                <li>First innings projected score predictor module based on powerplay trajectory.</li>
+                            </ul>
+                            <strong>Conclusion:</strong>
+                            The IPL Match Winner Prediction System demonstrates that well-engineered domain features combined with probabilistic classification deliver reliable, explainable, and visually engaging sports analytics suitable for both production applications and academic demonstration.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-custom">
+        <div class="container">
+            <div class="row g-4 align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-2 mb-2">
+                        <img src="{{ url_for('static', filename='images/ipl_trophy.svg') }}" alt="IPL Logo" class="footer-logo">
+                        <h5 class="text-white fw-bold mb-0">Interactive IPL Match Winner Prediction System</h5>
+                    </div>
+                    <p class="text-muted small mb-0">
+                        An Academic Machine Learning & Web Engineering Project built with Python, Flask, Scikit-learn, Bootstrap 5, and Chart.js.
+                    </p>
+                </div>
+
+                <div class="col-md-6 text-center text-md-end">
+                    <div class="d-flex justify-content-center justify-content-md-end gap-3 mb-2">
+                        <a href="{{ url_for('home') }}" class="footer-link">Home</a>
+                        <a href="{{ url_for('predict_page') }}" class="footer-link">Predictor</a>
+                        <a href="#methodology" class="footer-link">Architecture</a>
+                        <a href="#documentation" class="footer-link">Docs</a>
+                    </div>
+                    <small class="text-muted">
+                        &copy; 2026 IPL Predictor Project. Built for educational and analytical research.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

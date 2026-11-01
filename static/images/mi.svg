@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <linearGradient id="miGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#004BA0"/>
+      <stop offset="100%" stop-color="#001D4A"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE082"/>
+      <stop offset="100%" stop-color="#D4AF37"/>
+    </linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="56" fill="url(#miGrad)" stroke="url(#goldGrad)" stroke-width="4"/>
+  <g transform="translate(60,50)">
+    <path d="M0 -28 L7 -11 L25 -13 L13 0 L23 14 L6 11 L0 28 L-6 11 L-23 14 L-13 0 L-25 -13 L-7 -11 Z" fill="url(#goldGrad)"/>
+    <circle cx="0" cy="0" r="6" fill="#004BA0" stroke="#FFF" stroke-width="2"/>
+  </g>
+  <text x="60" y="96" font-family="'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="900" fill="url(#goldGrad)" text-anchor="middle" letter-spacing="2">MI</text>
+  <text x="60" y="108" font-family="'Segoe UI', Roboto, sans-serif" font-size="8" font-weight="700" fill="#FFF" text-anchor="middle">MUMBAI INDIANS</text>
+</svg>

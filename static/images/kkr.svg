@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <linearGradient id="kkrGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3A225D"/>
+      <stop offset="100%" stop-color="#1F1133"/>
+    </linearGradient>
+    <linearGradient id="kkrGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F3CE52"/>
+      <stop offset="100%" stop-color="#B38F23"/>
+    </linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="56" fill="url(#kkrGrad)" stroke="url(#kkrGold)" stroke-width="4"/>
+  <path d="M60 22 C45 22 40 38 40 50 C40 65 52 74 60 77 C68 74 80 65 80 50 C80 38 75 22 60 22 Z" fill="none" stroke="url(#kkrGold)" stroke-width="3"/>
+  <path d="M50 44 L70 44 L60 56 Z" fill="url(#kkrGold)"/>
+  <text x="60" y="96" font-family="'Segoe UI', Roboto, sans-serif" font-size="18" font-weight="900" fill="url(#kkrGold)" text-anchor="middle" letter-spacing="1.5">KKR</text>
+  <text x="60" y="108" font-family="'Segoe UI', Roboto, sans-serif" font-size="8" font-weight="700" fill="#FFF" text-anchor="middle">KNIGHT RIDERS</text>
+</svg>

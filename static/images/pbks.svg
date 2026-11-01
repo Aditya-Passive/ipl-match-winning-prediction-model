@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <linearGradient id="pbksGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#DD1F2D"/>
+      <stop offset="100%" stop-color="#8B0000"/>
+    </linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="56" fill="url(#pbksGrad)" stroke="#D4AF37" stroke-width="4"/>
+  <path d="M42 34 L78 34 L78 56 C78 68 60 76 60 76 C60 76 42 68 42 56 Z" fill="#D4AF37"/>
+  <path d="M48 40 L72 40 L72 54 C72 63 60 70 60 70 C60 70 48 63 48 54 Z" fill="#DD1F2D"/>
+  <text x="60" y="96" font-family="'Segoe UI', Roboto, sans-serif" font-size="18" font-weight="900" fill="#D4AF37" text-anchor="middle" letter-spacing="1.5">PBKS</text>
+  <text x="60" y="108" font-family="'Segoe UI', Roboto, sans-serif" font-size="8" font-weight="700" fill="#FFF" text-anchor="middle">PUNJAB KINGS</text>
+</svg>

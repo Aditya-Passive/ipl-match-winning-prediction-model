@@ -1,34 +1,20 @@
-# Python bytecode and cache
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
-*.so
 
-# Environments
-.env
-.venv
-env/
+# Virtual environments
 venv/
-ENV/
-env.bak/
-venv.bak/
+env/
+.venv/
 
-# Jupyter Notebook
-.ipynb_checkpoints
-*/.ipynb_checkpoints/*
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
 
-# Datasets and large model files (optional: keep track of small ones)
-*.csv
-*.parquet
-*.h5
-*.pkl
-*.joblib
-!data/sample*.csv
-
-# OS generated files
-.DS_Store
-Thumbs.db
-
-# IDEs
+# IDE / Editor folders
 .vscode/
 .idea/
+*.swp
+

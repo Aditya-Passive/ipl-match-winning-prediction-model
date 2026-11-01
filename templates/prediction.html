@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Match Predictor | IPL Match Winner Prediction System</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@700;800;900&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('home') }}">
+                <img src="{{ url_for('static', filename='images/ipl_trophy.svg') }}" alt="IPL Trophy" class="brand-icon">
+                <span>IPL <span class="brand-highlight">WIN PREDICTOR</span></span>
+            </a>
+            <button class="navbar-toggler text-white border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+                <i class="bi bi-list fs-2"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navMenu">
+                <ul class="navbar-nav ms-auto align-items-center gap-1">
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom" href="{{ url_for('home') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom active" href="{{ url_for('predict_page') }}">Predictor</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom" href="{{ url_for('home') }}#overview">Overview</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom" href="{{ url_for('home') }}#methodology">Architecture</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-custom" href="{{ url_for('home') }}#documentation">Docs</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Predictor Container -->
+    <div class="prediction-container">
+        <div class="container">
+            <!-- Header Breadcrumb & Status -->
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+                <div>
+                    <h2 class="text-white fw-bold mb-1">
+                        <i class="bi bi-speedometer2 text-info me-2"></i>Interactive 2nd Innings Predictor
+                    </h2>
+                    <p class="text-secondary small mb-0">
+                        Input or simulate any run-chase parameters below to calculate AI winning probabilities.
+                    </p>
+                </div>
+                <div>
+                    <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-50 px-3 py-2 rounded-pill">
+                        <i class="bi bi-check-circle-fill me-1"></i> ML Model Online ({{ accuracy }}% Accuracy)
+                    </span>
+                </div>
+            </div>
+
+            <!-- Quick Load Presets Ribbon -->
+            <div class="mb-4">
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <small class="text-muted text-uppercase fw-bold" style="font-size: 0.75rem;">
+                        <i class="bi bi-lightning-charge text-warning"></i> Fast Scenarios:
+                    </small>
+                    {% for scenario in sample_scenarios %}
+                    <button type="button" 
+                            class="scenario-pill preset-btn"
+                            data-batting="{{ scenario.batting_team }}"
+                            data-bowling="{{ scenario.bowling_team }}"
+                            data-city="{{ scenario.city }}"
+                            data-target="{{ scenario.target }}"
+                            data-score="{{ scenario.current_score }}"
+                            data-overs="{{ scenario.overs }}"
+                            data-wickets="{{ scenario.wickets_fallen }}">
+                        {{ scenario.title }}
+                    </button>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <!-- Left Column: Input Form -->
+                <div class="col-lg-6">
+                    <div class="form-card">
+                        <!-- Head-to-Head Visual Preview -->
+                        <div class="h2h-selector">
+                            <div class="h2h-team">
+                                <img id="battingTeamLogo" src="{{ url_for('static', filename='images/csk.svg') }}" alt="Batting Team" class="h2h-logo">
+                                <div id="battingTeamName" class="h2h-team-name">Chennai Super Kings</div>
+                                <span class="h2h-role-badge role-chasing">
+                                    <i class="bi bi-award me-1"></i> Batting (Chase)
+                                </span>
+                            </div>
+
+                            <div class="h2h-center-divider">
+                                <div class="h2h-vs-circle">VS</div>
+                            </div>
+
+                            <div class="h2h-team">
+                                <img id="bowlingTeamLogo" src="{{ url_for('static', filename='images/mi.svg') }}" alt="Bowling Team" class="h2h-logo">
+                                <div id="bowlingTeamName" class="h2h-team-name">Mumbai Indians</div>
+                                <span class="h2h-role-badge role-defending">
+                                    <i class="bi bi-shield-shaded me-1"></i> Bowling (Defend)
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Client/Server Alert Message Box -->
+                        <div id="formAlertBox" class="alert alert-danger alert-dismissible fade show" style="display: {{ 'block' if error_message else 'none' }};">
+                            {% if error_message %}
+                            <div class="d-flex align-items-center gap-2">
+                                <strong>Error:</strong> {{ error_message }}
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            {% endif %}
+                        </div>
+
+                        <!-- Match Prediction Form -->
+                        <form id="predictionForm" method="POST" action="{{ url_for('predict_page') }}">
+                            <!-- Host City / Venue -->
+                            <div class="mb-3">
+                                <label for="city" class="form-label-custom">
+                                    <i class="bi bi-geo-alt-fill text-danger"></i> Match Venue (Host City)
+                                </label>
+                                <select class="form-select form-select-custom" id="city" name="city" required>
+                                    <option value="" disabled {{ 'selected' if not form_data.get('city') and not request.args.get('city') }}>Select Host City</option>
+                                    {% for c in cities %}
+                                    {% set selected_city = request.args.get('city') or form_data.get('city') or 'Mumbai' %}
+                                    <option value="{{ c }}" {{ 'selected' if selected_city == c }}>
+                                        {{ c }} — {{ city_venues.get(c, 'IPL Stadium') }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <!-- Teams Selection Grid -->
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label for="batting_team" class="form-label-custom">
+                                        <i class="bi bi-person-walking text-info"></i> Batting Team (Chasing)
+                                    </label>
+                                    <select class="form-select form-select-custom" id="batting_team" name="batting_team" required>
+                                        {% set selected_bat = request.args.get('batting') or form_data.get('batting_team') or 'Chennai Super Kings' %}
+                                        {% for t in teams %}
+                                        <option value="{{ t }}" {{ 'selected' if selected_bat == t }}>{{ t }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="bowling_team" class="form-label-custom">
+                                        <i class="bi bi-shield-fill text-warning"></i> Bowling Team (Defending)
+                                    </label>
+                                    <select class="form-select form-select-custom" id="bowling_team" name="bowling_team" required>
+                                        {% set selected_bowl = request.args.get('bowling') or form_data.get('bowling_team') or 'Mumbai Indians' %}
+                                        {% for t in teams %}
+                                        <option value="{{ t }}" {{ 'selected' if selected_bowl == t }}>{{ t }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Match Score Inputs -->
+                            <div class="row g-3 mb-3">
+                                <div class="col-6 col-md-6">
+                                    <label for="target" class="form-label-custom">
+                                        <i class="bi bi-flag-fill text-danger"></i> Target Score
+                                    </label>
+                                    <input type="number" class="form-control form-control-custom" id="target" name="target" 
+                                           min="1" max="300" placeholder="e.g. 185" 
+                                           value="{{ request.args.get('target') or form_data.get('target') or '175' }}" required>
+                                </div>
+
+                                <div class="col-6 col-md-6">
+                                    <label for="current_score" class="form-label-custom">
+                                        <i class="bi bi-lightning-charge-fill text-success"></i> Current Score
+                                    </label>
+                                    <input type="number" class="form-control form-control-custom" id="current_score" name="current_score" 
+                                           min="0" max="299" placeholder="e.g. 120" 
+                                           value="{{ request.args.get('score') or form_data.get('current_score') or '135' }}" required>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-6 col-md-6">
+                                    <label for="overs" class="form-label-custom">
+                                        <i class="bi bi-clock-history text-primary"></i> Overs Completed
+                                    </label>
+                                    <input type="number" step="0.1" class="form-control form-control-custom" id="overs" name="overs" 
+                                           min="0.1" max="19.5" placeholder="e.g. 14.2" 
+                                           value="{{ request.args.get('overs') or form_data.get('overs') or '15.0' }}" required>
+                                    <small class="text-muted" style="font-size: 0.72rem;">Decimal notation: 15.3 = 15 overs, 3 balls</small>
+                                </div>
+
+                                <div class="col-6 col-md-6">
+                                    <label for="wickets_fallen" class="form-label-custom">
+                                        <i class="bi bi-person-x-fill text-danger"></i> Wickets Fallen
+                                    </label>
+                                    <select class="form-select form-select-custom" id="wickets_fallen" name="wickets_fallen" required>
+                                        {% set selected_wickets = request.args.get('wickets') or form_data.get('wickets_fallen') or '4' %}
+                                        {% for w in range(10) %}
+                                        <option value="{{ w }}" {{ 'selected' if selected_wickets|int == w }}>
+                                            {{ w }} {{ 'wicket' if w == 1 else 'wickets' }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Real-time Instant Calculated Indicators -->
+                            <div class="live-calc-bar">
+                                <div>
+                                    <div id="liveRunsNeeded" class="calc-pill-val">40</div>
+                                    <div class="calc-pill-label">Runs Needed</div>
+                                </div>
+                                <div>
+                                    <div id="liveBallsLeft" class="calc-pill-val">30</div>
+                                    <div class="calc-pill-label">Balls Left</div>
+                                </div>
+                                <div>
+                                    <div id="liveCRR" class="calc-pill-val">9.00</div>
+                                    <div class="calc-pill-label">Current RR</div>
+                                </div>
+                                <div>
+                                    <div id="liveRRR" class="calc-pill-val">8.00</div>
+                                    <div class="calc-pill-label">Required RR</div>
+                                </div>
+                            </div>
+
+                            <!-- Submit Button Group -->
+                            <div class="row g-2">
+                                <div class="col-8 col-sm-9">
+                                    <button type="submit" class="btn-predict-action" id="btnSubmitPredict">
+                                        <i class="bi bi-graph-up-arrow"></i> Predict Win Probability
+                                    </button>
+                                </div>
+                                <div class="col-4 col-sm-3">
+                                    <button type="reset" class="btn-reset-action w-100" id="btnResetForm">
+                                        <i class="bi bi-arrow-counterclockwise"></i> Reset
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Right Column: Results Dashboard -->
+                <div class="col-lg-6">
+                    <div class="results-card {{ 'active' if prediction_result else '' }}" id="resultsCard">
+                        <!-- Animated Loading Overlay -->
+                        <div class="loading-overlay" id="loadingOverlay">
+                            <img src="{{ url_for('static', filename='images/cricket_ball.svg') }}" alt="Loading..." class="loading-ball-spinner">
+                            <div class="loading-text">Computing Probabilistic Models...</div>
+                            <small class="text-muted">Evaluating team strength & venue dynamics</small>
+                        </div>
+
+                        <!-- Empty State (No prediction yet) -->
+                        <div id="resultsEmptyState" class="results-empty-state" style="display: {{ 'none' if prediction_result else 'block' }};">
+                            <img src="{{ url_for('static', filename='images/ipl_trophy.svg') }}" alt="IPL Trophy" class="empty-icon">
+                            <h4 class="text-white fw-bold mb-2">Ready to Calculate Prediction</h4>
+                            <p class="text-secondary small mx-auto" style="max-width: 420px; line-height: 1.6;">
+                                Select match venue, batting & bowling teams, and input the live match score on the left. Click <strong>Predict Win Probability</strong> to generate calibrated forecasts and interactive analytics.
+                            </p>
+                            <div class="mt-3">
+                                <button type="button" class="btn btn-outline-info btn-sm rounded-pill px-3 preset-btn"
+                                        data-batting="Chennai Super Kings"
+                                        data-bowling="Mumbai Indians"
+                                        data-city="Hyderabad"
+                                        data-target="150"
+                                        data-score="133"
+                                        data-overs="18.2"
+                                        data-wickets="5">
+                                    <i class="bi bi-play-circle me-1"></i> Try Demo Match
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Content State (Active Prediction) -->
+                        <div id="resultsContentState" style="display: {{ 'block' if prediction_result else 'none' }};">
+                            <div class="d-flex align-items-center justify-content-between pb-3 mb-3 border-bottom border-secondary border-opacity-25">
+                                <span class="text-uppercase fw-bold text-info" style="font-size: 0.8rem; letter-spacing: 1px;">
+                                    <i class="bi bi-cpu-fill me-1"></i> ML Prediction Result
+                                </span>
+                                <span id="resultStatusPill" class="match-status-pill status-pill-{{ prediction_result.analysis.badge_class if prediction_result else 'primary' }}">
+                                    {{ prediction_result.analysis.status if prediction_result else 'Match in Progress' }}
+                                </span>
+                            </div>
+
+                            <!-- Probabilities Display Header -->
+                            <div class="prob-display-row">
+                                <div class="prob-badge-box">
+                                    <img id="resultBattingLogo" src="{{ url_for('static', filename='images/' + (prediction_result.batting_meta.logo if prediction_result else 'csk.svg')) }}" alt="Batting Logo" style="width: 44px; height: 44px; margin-bottom: 0.35rem;">
+                                    <div id="resultBattingTeam" class="text-white fw-bold small text-truncate px-2">{{ prediction_result.batting_team if prediction_result else 'Batting Team' }}</div>
+                                    <div id="resultBattingProb" class="prob-value-large prob-batting-val">
+                                        {{ prediction_result.batting_prob if prediction_result else '0' }}%
+                                    </div>
+                                    <small class="text-muted text-uppercase fw-bold" style="font-size: 0.7rem;">Chasing</small>
+                                </div>
+
+                                <div class="text-center px-2">
+                                    <span class="badge bg-secondary bg-opacity-25 text-white px-2 py-1 rounded-pill" style="font-size: 0.75rem;">WIN PROBABILITY</span>
+                                </div>
+
+                                <div class="prob-badge-box">
+                                    <img id="resultBowlingLogo" src="{{ url_for('static', filename='images/' + (prediction_result.bowling_meta.logo if prediction_result else 'mi.svg')) }}" alt="Bowling Logo" style="width: 44px; height: 44px; margin-bottom: 0.35rem;">
+                                    <div id="resultBowlingTeam" class="text-white fw-bold small text-truncate px-2">{{ prediction_result.bowling_team if prediction_result else 'Bowling Team' }}</div>
+                                    <div id="resultBowlingProb" class="prob-value-large prob-bowling-val">
+                                        {{ prediction_result.bowling_prob if prediction_result else '0' }}%
+                                    </div>
+                                    <small class="text-muted text-uppercase fw-bold" style="font-size: 0.7rem;">Defending</small>
+                                </div>
+                            </div>
+
+                            <!-- Dual Animated Progress Bar -->
+                            <div class="dual-progress-container">
+                                <div class="dual-progress-bar">
+                                    <div id="progressBarBatting" class="progress-batting" style="width: {{ prediction_result.batting_prob if prediction_result else 50 }}%; background-color: {{ prediction_result.batting_meta.primary_color if prediction_result else '#00d2ff' }};"></div>
+                                    <div id="progressBarBowling" class="progress-bowling" style="width: {{ prediction_result.bowling_prob if prediction_result else 50 }}%; background-color: {{ prediction_result.bowling_meta.primary_color if prediction_result else '#ff3366' }};"></div>
+                                </div>
+                            </div>
+
+                            <!-- Qualitative Commentary Box -->
+                            <div class="commentary-box" id="resultCommentary">
+                                <strong>Match Intelligence:</strong> {{ prediction_result.analysis.commentary if prediction_result else '' }}
+                            </div>
+
+                            <!-- 5 Match Metrics Diagnostic Grid -->
+                            <div class="metrics-row">
+                                <div class="metric-tile">
+                                    <div id="metricRunsLeft" class="metric-tile-val text-warning">{{ prediction_result.runs_left if prediction_result else 0 }}</div>
+                                    <div class="metric-tile-label">Runs Left</div>
+                                </div>
+                                <div class="metric-tile">
+                                    <div id="metricBallsLeft" class="metric-tile-val text-info">{{ prediction_result.balls_left if prediction_result else 0 }}</div>
+                                    <div class="metric-tile-label">Balls Left</div>
+                                </div>
+                                <div class="metric-tile">
+                                    <div id="metricWicketsLeft" class="metric-tile-val text-success">{{ prediction_result.wickets_remaining if prediction_result else 0 }}</div>
+                                    <div class="metric-tile-label">Wickets Left</div>
+                                </div>
+                                <div class="metric-tile">
+                                    <div id="metricCRR" class="metric-tile-val text-white">{{ prediction_result.crr if prediction_result else '0.00' }}</div>
+                                    <div class="metric-tile-label">Current RR</div>
+                                </div>
+                                <div class="metric-tile">
+                                    <div id="metricRRR" class="metric-tile-val text-danger">{{ prediction_result.rrr if prediction_result else '0.00' }}</div>
+                                    <div class="metric-tile-label">Required RR</div>
+                                </div>
+                            </div>
+
+                            <!-- Chart.js Visualization Row -->
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="p-3 rounded-4" style="background: rgba(10, 14, 26, 0.6); border: 1px solid var(--border-color);">
+                                        <div class="text-white fw-bold small text-center mb-2">
+                                            <i class="bi bi-pie-chart-fill text-info me-1"></i> Win Probability Ratio
+                                        </div>
+                                        <div class="chart-container-wrapper" style="height: 180px;">
+                                            <canvas id="winProbDonutChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="p-3 rounded-4" style="background: rgba(10, 14, 26, 0.6); border: 1px solid var(--border-color);">
+                                        <div class="text-white fw-bold small text-center mb-2">
+                                            <i class="bi bi-bar-chart-fill text-warning me-1"></i> CRR vs RRR Pressure
+                                        </div>
+                                        <div class="chart-container-wrapper" style="height: 180px;">
+                                            <canvas id="runRateBarChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {% if prediction_result %}
+                            <!-- Server data injection for initial chart rendering if loaded via POST -->
+                            <script id="serverPredictionData" type="application/json">
+                                {{ {
+                                    'probabilities': {
+                                        'batting_prob': prediction_result.batting_prob,
+                                        'bowling_prob': prediction_result.bowling_prob,
+                                        'batting_team': prediction_result.batting_team,
+                                        'bowling_team': prediction_result.bowling_team
+                                    },
+                                    'metadata': {
+                                        'batting': prediction_result.batting_meta,
+                                        'bowling': prediction_result.bowling_meta
+                                    },
+                                    'match_info': {
+                                        'crr': prediction_result.crr,
+                                        'rrr': prediction_result.rrr
+                                    }
+                                } | tojson }}
+                            </script>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer-custom">
+        <div class="container text-center">
+            <p class="text-muted small mb-0">
+                &copy; 2026 Interactive IPL Match Winner Prediction System • Powered by Logistic Regression, Flask, Bootstrap 5 & Chart.js
+            </p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom Application Script -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
+
