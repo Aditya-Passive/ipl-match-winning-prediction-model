@@ -35,28 +35,28 @@ The development methodology follows standard CRISP-DM (Cross-Industry Standard P
 [ Web Presentation & Charts ] ◄── [ Flask Web Server API ] ◄── [ Model Evaluation & Pickling ]
 ```
 
-### 4.1 Feature Engineering Equations
-From the user inputs (Target $T$, Current Score $S$, Overs Completed $O$, Wickets Fallen $W_{\text{fall}}$, Batting Team, Bowling Team, City), the following features are derived:
+### 3.1 Feature Calculations & Cricket Logic
+From the user inputs (Target, Current Score, Overs Completed, Wickets Fallen, Batting Team, Bowling Team, City), the following 6 dynamic features are computed:
 
-1. **Balls Bowled ($B_{\text{bowled}}$):**
-   $$B_{\text{bowled}} = (\lfloor O \rfloor \times 6) + \text{round}((O - \lfloor O \rfloor) \times 10)$$
-2. **Balls Remaining ($B_{\text{left}}$):**
-   $$B_{\text{left}} = 120 - B_{\text{bowled}}$$
-3. **Runs Needed ($R_{\text{left}}$):**
-   $$R_{\text{left}} = T - S$$
-4. **Wickets in Hand ($W_{\text{rem}}$):**
-   $$W_{\text{rem}} = 10 - W_{\text{fall}}$$
-5. **Current Run Rate ($\text{CRR}$):**
-   $$\text{CRR} = \frac{S \times 6}{B_{\text{bowled}}}$$
-6. **Required Run Rate ($\text{RRR}$):**
-   $$\text{RRR} = \frac{R_{\text{left}} \times 6}{B_{\text{left}}}$$
+1. **Runs Needed to Win:**
+   `Runs Left = Target Score - Current Score`
+2. **Balls Remaining:**
+   `Balls Left = 120 - Total Balls Bowled`
+3. **Wickets in Hand:**
+   `Wickets Left = 10 - Wickets Fallen`
+4. **Current Run Rate (CRR):**
+   `CRR = (Current Score × 6) / Balls Bowled`
+5. **Required Run Rate (RRR):**
+   `RRR = (Runs Left × 6) / Balls Left`
+6. **Match Context & Ground Dimensions:**
+   Categorical inputs: `Batting Team`, `Bowling Team`, and `Host City`.
 
-### 4.2 Machine Learning Algorithm Rationale
-**Logistic Regression** with a `liblinear` solver was selected over alternative classification models for several technical reasons:
-- **Sigmoid Calibration:** Maps the linear combination of inputs $\mathbf{w}^T \mathbf{x} + b$ directly into a valid probability $P \in (0, 1)$ via the sigmoid activation:
-  $$\sigma(z) = \frac{1}{1 + e^{-z}}$$
-- **Monotonic Sensitivity:** As runs required increase or wickets fall, probability decreases strictly monotonically, reflecting realistic sports mechanics.
-- **Inference Speed:** Linear models execute inference in under 5 milliseconds, making them ideal for high-throughput live web applications.
+### 3.2 Machine Learning Algorithm & Probability Calibration
+**Logistic Regression** (with `liblinear` solver) was selected over alternative classification models for several key reasons:
+- **Sigmoid Calibration:** Maps the weighted combination of all 9 match features into a smooth probability between 0% and 100% using the standard Sigmoid curve:
+  `Probability = 1 / (1 + e^(-z))`
+- **Monotonic Sensitivity:** As runs required increase or wickets fall, probability decreases smoothly and realistically without erratic step jumps.
+- **Low Latency Inference:** Generates predictions in under 10 milliseconds, making it ideal for interactive web dashboards.
 
 ---
 

@@ -62,36 +62,24 @@ This project addresses these gaps by creating a statistically calibrated, transp
 
 ## 🔬 Methodology & Machine Learning Formulation
 
-### 1. Mathematical Feature Formulation
-Given a second-innings state:
-- **Target Score ($T$):** Total runs scored by Team 1 plus 1.
-- **Current Score ($S$):** Runs scored so far by the chasing team.
-- **Overs Completed ($O$):** Where decimal represents balls (e.g. $15.3 = 15$ overs and $3$ balls).
-- **Balls Bowled ($B_{\text{bowled}}$):**
-  $$\text{Balls Bowled} = (\lfloor O \rfloor \times 6) + (10 \times (O - \lfloor O \rfloor))$$
-- **Balls Left ($B_{\text{left}}$):**
-  $$B_{\text{left}} = 120 - B_{\text{bowled}}$$
-- **Runs Left ($R_{\text{left}}$):**
-  $$R_{\text{left}} = T - S$$
-- **Wickets in Hand ($W_{\text{rem}}$):**
-  $$W_{\text{rem}} = 10 - \text{Wickets Fallen}$$
-- **Current Run Rate ($\text{CRR}$):**
-  $$\text{CRR} = \frac{S \times 6}{B_{\text{bowled}}}$$
-- **Required Run Rate ($\text{RRR}$):**
-  $$\text{RRR} = \frac{R_{\text{left}} \times 6}{B_{\text{left}}}$$
+### 1. Match Calculations & Feature Formulation
+During an in-progress IPL run chase, the system tracks 6 key dynamic match features:
+- **Runs Left to Win:** `Target Score - Current Score`
+- **Balls Remaining:** `120 - Total Balls Bowled`
+- **Wickets in Hand:** `10 - Wickets Fallen`
+- **Current Run Rate (CRR):** `(Current Score × 6) / Balls Bowled`
+- **Required Run Rate (RRR):** `(Runs Left × 6) / Balls Left`
+- **Match Context:** `Batting Team`, `Bowling Team`, and `Host City` (venue dew factor).
 
 ### 2. Logistic Regression & Probability Calibration
-Logistic Regression models the posterior probability of chasing team victory ($Y = 1$) via the logistic sigmoid function:
+Logistic Regression models the probability of chasing team victory using the standard Sigmoid curve:
 
-$$P(Y = 1 \mid \mathbf{x}) = \sigma(\mathbf{w}^T \mathbf{x} + b) = \frac{1}{1 + e^{-(\mathbf{w}^T \mathbf{x} + b)}}$$
+$$\text{Probability} = \frac{1}{1 + e^{-z}}$$
 
-$$P(Y = 0 \mid \mathbf{x}) = 1 - P(Y = 1 \mid \mathbf{x})$$
-
-Where $\mathbf{x}$ is the composite feature vector:
-$$\mathbf{x} = [\text{OneHot}(\text{Batting Team}), \text{OneHot}(\text{Bowling Team}), \text{OneHot}(\text{City}), R_{\text{left}}, B_{\text{left}}, W_{\text{rem}}, T, \text{CRR}, \text{RRR}]$$
+Where $z$ is the weighted sum of all 9 match features learned from 16+ seasons of IPL historical data.
 
 **Why Logistic Regression?**
-Unlike uncalibrated tree-based ensembles, Logistic Regression produces monotonic, smooth, well-calibrated probabilities. As balls decrease or wickets fall, probability shifts smoothly without abrupt artifacts, mirroring real cricket game theory.
+Unlike uncalibrated tree-based models, Logistic Regression produces monotonic, smooth, well-calibrated probabilities. As balls decrease or wickets fall, probability shifts smoothly without erratic random jumps, matching real-world cricket game theory.
 
 ---
 
