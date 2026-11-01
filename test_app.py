@@ -28,7 +28,7 @@ def run_tests():
     print("[Test 2] Testing Predict Page ('/predict')...")
     res = client.get('/predict')
     assert res.status_code == 200, f"Expected 200, got {res.status_code}"
-    assert b"Live 2nd Innings Predictor" in res.data
+    assert b"Interactive 2nd Innings Predictor" in res.data
     assert b"Chennai Super Kings" in res.data
     print("         PASS: Predict Page loaded with status 200 OK.")
 

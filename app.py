@@ -31,15 +31,6 @@ ROC_AUC = 93.22
 
 # Metadata for IPL Teams (Colors, Short Codes, Stadiums, Logos)
 TEAM_METADATA = {
-    'Chennai Super Kings': {
-        'code': 'CSK',
-        'primary_color': '#FDB913',
-        'secondary_color': '#005CA8',
-        'text_color': '#000000',
-        'logo': 'csk.svg',
-        'stadium': 'MA Chidambaram Stadium, Chepauk',
-        'titles': 5
-    },
     'Mumbai Indians': {
         'code': 'MI',
         'primary_color': '#004BA0',
@@ -47,6 +38,15 @@ TEAM_METADATA = {
         'text_color': '#FFFFFF',
         'logo': 'mi.svg',
         'stadium': 'Wankhede Stadium',
+        'titles': 5
+    },
+    'Chennai Super Kings': {
+        'code': 'CSK',
+        'primary_color': '#FDB913',
+        'secondary_color': '#005CA8',
+        'text_color': '#000000',
+        'logo': 'csk.svg',
+        'stadium': 'MA Chidambaram Stadium, Chepauk',
         'titles': 5
     },
     'Kolkata Knight Riders': {
@@ -57,6 +57,24 @@ TEAM_METADATA = {
         'logo': 'kkr.svg',
         'stadium': 'Eden Gardens',
         'titles': 3
+    },
+    'Royal Challengers Bengaluru': {
+        'code': 'RCB',
+        'primary_color': '#EC1C24',
+        'secondary_color': '#111111',
+        'text_color': '#FFFFFF',
+        'logo': 'rcb.svg',
+        'stadium': 'M. Chinnaswamy Stadium',
+        'titles': 2
+    },
+    'Gujarat Titans': {
+        'code': 'GT',
+        'primary_color': '#1C2A39',
+        'secondary_color': '#B89547',
+        'text_color': '#FFFFFF',
+        'logo': 'gt.svg',
+        'stadium': 'Narendra Modi Stadium',
+        'titles': 1
     },
     'Sunrisers Hyderabad': {
         'code': 'SRH',
@@ -75,24 +93,6 @@ TEAM_METADATA = {
         'logo': 'rr.svg',
         'stadium': 'Sawai Mansingh Stadium',
         'titles': 1
-    },
-    'Gujarat Titans': {
-        'code': 'GT',
-        'primary_color': '#1C2A39',
-        'secondary_color': '#B89547',
-        'text_color': '#FFFFFF',
-        'logo': 'gt.svg',
-        'stadium': 'Narendra Modi Stadium',
-        'titles': 1
-    },
-    'Royal Challengers Bengaluru': {
-        'code': 'RCB',
-        'primary_color': '#EC1C24',
-        'secondary_color': '#111111',
-        'text_color': '#FFFFFF',
-        'logo': 'rcb.svg',
-        'stadium': 'M. Chinnaswamy Stadium',
-        'titles': 2
     },
     'Delhi Capitals': {
         'code': 'DC',
