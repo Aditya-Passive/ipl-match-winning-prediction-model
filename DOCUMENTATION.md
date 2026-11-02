@@ -1,5 +1,5 @@
 # 📘 ACADEMIC PROJECT REPORT
-## Interactive IPL Match Winner Prediction System
+## IPL ChaseMaster: Interactive Match Winner Prediction System
 ### Major Project Report • Machine Learning & Web Engineering
 
 ---

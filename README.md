@@ -1,4 +1,4 @@
-# 🏏 Interactive IPL Match Winner Prediction System
+# 🏏 IPL ChaseMaster: Match Winner Prediction System
 
 [![Python](https://img.shields.io/badge/Python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue.svg?logo=python)](https://www.python.org/)
 [![Flask](https://img.shields.io/badge/Flask-2.3%2B-black.svg?logo=flask)](https://palletsprojects.com/p/flask/)
@@ -33,7 +33,7 @@ An interactive, full-stack machine learning web application that calculates **ca
 
 In Twenty20 cricket, particularly the Indian Premier League (IPL), match momentum shifts dramatically on an over-by-over basis. A chase requiring 45 runs off 30 balls can transform into an improbable contest if two wickets fall, or into an easy chase with two consecutive sixes. 
 
-The **Interactive IPL Match Winner Prediction System** provides sports enthusiasts, data analysts, commentators, and coaches with a data-driven probabilistic model. By entering the current match state (Batting team, Bowling team, Venue, Target, Current Score, Overs bowled, and Wickets lost), the application computes:
+The **IPL ChaseMaster** provides sports enthusiasts, data analysts, commentators, and coaches with a data-driven probabilistic model. By entering the current match state (Batting team, Bowling team, Venue, Target, Current Score, Overs bowled, and Wickets lost), the application computes:
 - Exact winning percentage for both teams (summing to 100%).
 - Real-time diagnostic metrics: Runs Needed, Balls Left, Current Run Rate (CRR), Required Run Rate (RRR).
 - Interactive Chart.js Donut Visualization & CRR vs. RRR pressure charts.

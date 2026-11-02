@@ -1,6 +1,6 @@
 """
 =============================================================================
-IPL Match Winner Prediction System - Automated Test Suite
+IPL ChaseMaster - Automated Test Suite
 =============================================================================
 Executes integration tests on Flask routes, API endpoints, error handlers,
 and machine learning inference logic.
@@ -13,7 +13,7 @@ from app import app
 def run_tests():
     client = app.test_client()
     print("=" * 60)
-    print("   RUNNING AUTOMATED TEST SUITE FOR IPL PREDICTOR APP      ")
+    print("   RUNNING AUTOMATED TEST SUITE FOR IPL CHASEMASTER APP     ")
     print("=" * 60)
 
     # Test 1: Home Page GET
@@ -21,7 +21,7 @@ def run_tests():
     res = client.get('/')
     assert res.status_code == 200, f"Expected 200, got {res.status_code}"
     assert b"IPL" in res.data, "IPL keyword missing in home page"
-    assert b"Prediction System" in res.data, "Prediction System missing in home page"
+    assert b"ChaseMaster" in res.data, "ChaseMaster branding missing in home page"
     print("         PASS: Home Page loaded with status 200 OK.")
 
     # Test 2: Predict Page GET
@@ -29,6 +29,7 @@ def run_tests():
     res = client.get('/predict')
     assert res.status_code == 200, f"Expected 200, got {res.status_code}"
     assert b"Interactive 2nd Innings Predictor" in res.data
+    assert b"ChaseMaster" in res.data, "ChaseMaster branding missing in predict page"
     assert b"Chennai Super Kings" in res.data
     print("         PASS: Predict Page loaded with status 200 OK.")
 

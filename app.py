@@ -1,6 +1,6 @@
 """
 =============================================================================
-IPL Match Winner Prediction System - Flask Web Application
+IPL ChaseMaster - Interactive Match Winner Prediction System
 =============================================================================
 This application serves:
 1. Home Page ('/') with project documentation, architecture, & model insights
@@ -539,6 +539,6 @@ def get_teams():
 if __name__ == '__main__':
     # Start local Flask development server
     port = int(os.environ.get('PORT', 5000))
-    print(f"Starting IPL Prediction Flask server on http://127.0.0.1:{port}")
+    print(f"Starting IPL ChaseMaster Flask server on http://127.0.0.1:{port}")
     app.run(host='127.0.0.1', port=port, debug=True)
 
